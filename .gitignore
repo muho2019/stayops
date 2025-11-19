@@ -1,0 +1,199 @@
+########################################
+# OS
+########################################
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+########################################
+# Rider / IntelliJ / JetBrains
+########################################
+.idea/
+*.sln.iml
+*.DotSettings.user
+*.ReSharper/
+*.Rider/
+
+# JetBrains cache
+*/_ReSharper.Caches/
+*/.idea/
+
+########################################
+# Visual Studio / .NET
+########################################
+
+# Build outputs
+bin/
+obj/
+out/
+
+# VS config
+.vs/
+*.user
+*.userosscache
+*.suo
+*.cache
+*.sln.docstates
+
+# Publish outputs
+*.pubxml
+*.Publish.xml
+ProjectName/*.PublishSettings
+
+# Logs
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+*.nuspec
+
+# EF Core artifacts
+Migrations/**/modelSnapshot.cs
+*.dbmdl
+
+# Temporary files
+*.tmp
+*.temp
+
+########################################
+# ASP.NET Core
+########################################
+appsettings.Local.json
+appsettings.Development.Local.json
+appsettings.*.local.json
+
+# Secret Manager
+**/secret.json
+
+########################################
+# Docker
+########################################
+# Avoid committing containers, volumes, etc.
+docker-compose.override.yml
+docker-data/
+docker/volumes/
+docker/tmp/
+
+########################################
+# Node / Next.js (frontend)
+########################################
+
+# Node modules
+node_modules/
+
+# Next.js output
+.next/
+out/
+
+# Build artifacts
+dist/
+build/
+
+# NPM/Yarn/PNPM logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+*.env
+*.env.local
+*.env.development.local
+*.env.production.local
+*.env.test.local
+
+# Typescript
+*.tsbuildinfo
+
+# Next.js cache
+.next/
+.vercel/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+########################################
+# Logs & Temp
+########################################
+logs/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+########################################
+# Editor / Tooling
+########################################
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IntelliJ workspace file
+*.iws
+
+########################################
+# Miscellaneous
+########################################
+*.orig
+*.bak
+*.backup
+*.swp
+*.swo
+coverage/
+coverage-*
+temp/
+tmp/
+cache/
+*.bundle
+
+########################################
+# Database / Local runtime
+########################################
+
+# Local DB files
+*.mdf
+*.ldf
+*.db
+*.sql
+
+# Docker databases mounted locally
+/mssql-data/
+/postgres-data/
+sql/data/
+
+########################################
+# StayOps project specific
+########################################
+
+# Prevent committing backend user-specific settings
+backend/**/*.local.json
+backend/**/appsettings.Local*.json
+
+# Prevent committing frontend environment
+frontend/**/.next/
+frontend/**/node_modules/
+
+# Prevent committing Rider-specific backend config
+backend/.idea/
+backend/**/*.DotSettings.user
+
+# Prevent committing integration test local files
+tests/**/TestResults/
+tests/**/testhost/

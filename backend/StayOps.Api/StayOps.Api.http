@@ -1,0 +1,6 @@
+@StayOps.Api_HostAddress = http://localhost:5296
+
+GET {{StayOps.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

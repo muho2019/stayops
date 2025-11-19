@@ -1,0 +1,88 @@
+version: '3.9'
+
+services:
+  db:
+    image: mcr.microsoft.com/azure-sql-edge:latest # ARM 호환
+    user: '0:0' # 로컬 권한 문제( /.system 디렉터리 생성 실패) 방지용
+    container_name: stayops-db
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_PID: 'Developer'
+      SA_PASSWORD: stayops@1234
+    ports:
+      - '1433:1433'
+    volumes:
+      - stayops_db_data:/var/opt/mssql
+    networks:
+      - stayops-net
+    healthcheck:
+      # 포트 오픈 여부 기준 간단 헬스체크 (개발용)
+      test: ['CMD-SHELL', "bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile # backend/Dockerfile (dotnet watch)
+    container_name: stayops-api
+    working_dir: /src
+    volumes:
+      - ./backend:/src # 소스 코드 마운트 → dotnet watch 핫 리로드
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: 'Server=db,1433;Database=StayOpsDb;User ID=sa;Password=stayops@1234;TrustServerCertificate=True;Encrypt=False'
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '5100:8080' # 호스트:컨테이너(Kestrel 8080)
+    networks:
+      - stayops-net
+    tty: true
+    stdin_open: true
+    healthcheck:
+      # 기본 템플릿 엔드포인트 사용
+      test: ['CMD-SHELL', 'curl -f http://localhost:8080/weatherforecast || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+  web:
+    build:
+      context: ./frontend/stayops-admin
+      dockerfile: Dockerfile # frontend/stayops-admin/Dockerfile (npm run dev)
+    container_name: stayops-web
+    working_dir: /app
+    volumes:
+      - ./frontend/stayops-admin:/app # 소스 코드 마운트 → Next.js 핫 리로드
+      - stayops_node_modules:/app/node_modules
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:5100
+    depends_on:
+      api:
+        condition: service_healthy # api 헬스체크 통과 후 web 시작
+    ports:
+      - '5101:3000'
+    networks:
+      - stayops-net
+    tty: true
+    stdin_open: true
+    healthcheck:
+      # Next.js dev 서버 헬스체크
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000 || exit 1']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+networks:
+  stayops-net:
+
+volumes:
+  stayops_db_data:
+  stayops_node_modules:
