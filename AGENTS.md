@@ -23,6 +23,7 @@
 ## 코드 스타일 & 네이밍
 
 - C#: 4-스페이스 들여쓰기, nullable 활성, `var`는 타입이 명확할 때만 사용. 공개 타입/메서드는 PascalCase, 로컬/파라미터는 camelCase, 비동기 메서드는 `Async` 접미사. 인터페이스는 `I` 접두사, DTO/명령/쿼리는 역할 명시, 예외는 구체적 타입 사용.
+- C#: private 필드는 `_fieldName` 패턴을 사용합니다.
 - .NET/DDD & OOP: 의존성은 DI로 주입 후 생성자 null 가드. 규칙은 엔티티/값 객체에 두고 Application 서비스는 트랜잭션·흐름만 조율. 애그리게이트 루트가 불변 조건을 유지하고 도메인 이벤트로 부수 효과를 전달. 값 객체는 불변, 컬렉션은 `IReadOnly*` 우선, 시간은 `DateTimeOffset` 사용. SOLID·캡슐화를 우선하며 라이브러리 성격이 아니면 `ConfigureAwait(false)`를 피합니다.
 - TypeScript/React: 함수형 컴포넌트 + 명시적 타입. 파일을 작게 나누고 타입과 파일명을 일치 (`BookingService.cs`, `BookingCard.tsx`). Tailwind 유틸 클래스를 일관되게 사용하고 공통 스타일은 `globals.css`에 둡니다.
 
