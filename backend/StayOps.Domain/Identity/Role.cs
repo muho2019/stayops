@@ -29,7 +29,7 @@ public sealed class Role : Entity<RoleId>
 
     public IReadOnlyCollection<Permission> Permissions => _permissions;
 
-    internal Permission PermissionsValue
+    public Permission PermissionsValue
     {
         get
         {
