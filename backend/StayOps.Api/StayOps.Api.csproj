@@ -10,4 +10,10 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\StayOps.Application\StayOps.Application.csproj" />
+        <ProjectReference Include="..\StayOps.Domain\StayOps.Domain.csproj" />
+        <ProjectReference Include="..\StayOps.Infrastructure\StayOps.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
