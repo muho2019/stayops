@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\StayOps.Domain\StayOps.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
