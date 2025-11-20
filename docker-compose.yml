@@ -43,13 +43,6 @@ services:
       - stayops-net
     tty: true
     stdin_open: true
-    healthcheck:
-      # 기본 템플릿 엔드포인트 사용
-      test: ['CMD-SHELL', 'curl -f http://localhost:8080/weatherforecast || exit 1']
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 20s
 
   web:
     build:
@@ -65,20 +58,13 @@ services:
       NEXT_PUBLIC_API_BASE_URL: http://localhost:5100
     depends_on:
       api:
-        condition: service_healthy # api 헬스체크 통과 후 web 시작
+        condition: service_started
     ports:
       - '5101:3000'
     networks:
       - stayops-net
     tty: true
     stdin_open: true
-    healthcheck:
-      # Next.js dev 서버 헬스체크
-      test: ['CMD-SHELL', 'curl -f http://localhost:3000 || exit 1']
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 20s
 
 networks:
   stayops-net:
