@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using StayOps.Domain.Identity;
-using StayOps.Infrastructure.Identity.Configurations;
+using StayOps.Domain.Users;
+using StayOps.Infrastructure.Users.Configurations;
 
 namespace StayOps.Infrastructure.Data;
 

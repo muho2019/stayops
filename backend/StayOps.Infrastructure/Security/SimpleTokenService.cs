@@ -1,5 +1,5 @@
-using StayOps.Application.Identity.Abstractions;
-using StayOps.Domain.Identity;
+using StayOps.Application.Auth.Abstractions;
+using StayOps.Domain.Users;
 
 namespace StayOps.Infrastructure.Security;
 

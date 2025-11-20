@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
-using StayOps.Application.Identity.Abstractions;
+using StayOps.Application.Users.Abstractions;
 
 namespace StayOps.Infrastructure.Security;
 
