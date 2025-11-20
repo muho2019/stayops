@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
+using StayOps.Api.Middleware;
 using StayOps.Application.Abstractions;
 using StayOps.Application.Auth.Abstractions;
 using StayOps.Application.Auth.Services;
@@ -43,6 +44,7 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions();
 var signingKey = Encoding.UTF8.GetBytes(jwtOptions.SigningKey);
@@ -79,6 +81,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("DevCors");
+
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
