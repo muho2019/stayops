@@ -15,34 +15,6 @@ services:
       - stayops_db_data:/var/opt/mssql
     networks:
       - stayops-net
-    healthcheck:
-      # 포트 오픈 여부 기준 간단 헬스체크 (개발용)
-      test: ['CMD-SHELL', "bash -c '</dev/tcp/localhost/1433' || exit 1"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-      start_period: 20s
-
-  api:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile # backend/Dockerfile (dotnet watch)
-    container_name: stayops-api
-    working_dir: /src
-    volumes:
-      - ./backend:/src # 소스 코드 마운트 → dotnet watch 핫 리로드
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__Default: 'Server=db,1433;Database=StayOpsDb;User ID=sa;Password=stayops@1234;TrustServerCertificate=True;Encrypt=False'
-    depends_on:
-      db:
-        condition: service_healthy
-    ports:
-      - '5100:8080' # 호스트:컨테이너(Kestrel 8080)
-    networks:
-      - stayops-net
-    tty: true
-    stdin_open: true
 
   web:
     build:
@@ -56,9 +28,6 @@ services:
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_BASE_URL: http://localhost:5100
-    depends_on:
-      api:
-        condition: service_started
     ports:
       - '5101:3000'
     networks:
