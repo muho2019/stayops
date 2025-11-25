@@ -1,20 +1,22 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.Json.Serialization;
 using StayOps.Api.Middleware;
 using StayOps.Application.Abstractions;
 using StayOps.Application.Auth.Abstractions;
 using StayOps.Application.Auth.Services;
+using StayOps.Application.Hotels.Abstractions;
+using StayOps.Application.Hotels.Services;
 using StayOps.Application.Users.Abstractions;
 using StayOps.Application.Users.Services;
 using StayOps.Infrastructure.Data;
+using StayOps.Infrastructure.Hotels.Repositories;
 using StayOps.Infrastructure.Security;
 using StayOps.Infrastructure.Time;
 using StayOps.Infrastructure.Users;
 using StayOps.Infrastructure.Users.Repositories;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,11 +41,13 @@ builder.Services.AddDbContext<StayOpsDbContext>(options =>
 builder.Services.AddScoped<IDateTimeProvider, SystemDateTimeProvider>();
 builder.Services.AddScoped<IUserRepository, EfUserRepository>();
 builder.Services.AddScoped<IRoleRepository, EfRoleRepository>();
+builder.Services.AddScoped<IHotelRepository, EfHotelRepository>();
 builder.Services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton<ITokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>() ?? new JwtOptions();
