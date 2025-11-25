@@ -15,27 +15,32 @@ public sealed class EfHotelRepository : IHotelRepository
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public Task<Hotel?> GetByIdAsync(HotelId id, CancellationToken cancellationToken)
+    public Task<Hotel?> GetByIdAsync(HotelId id, CancellationToken cancellationToken, bool includeDeleted = false)
     {
-        return _dbContext.Hotels
-            .FirstOrDefaultAsync(h => h.Id == id, cancellationToken);
+        IQueryable<Hotel> query = includeDeleted
+            ? _dbContext.Hotels.IgnoreQueryFilters()
+            : _dbContext.Hotels;
+
+        return query.FirstOrDefaultAsync(h => h.Id == id, cancellationToken);
     }
 
-    public Task<bool> CodeExistsAsync(string code, CancellationToken cancellationToken, HotelId? excludeHotelId = null)
+    public Task<bool> CodeExistsAsync(string code, CancellationToken cancellationToken, HotelId? excludeHotelId = null, bool includeDeleted = false)
     {
-        return _dbContext.Hotels
-            .AnyAsync(
-                h => !h.IsDeleted
-                     && h.Code == code
-                     && (!excludeHotelId.HasValue || h.Id != excludeHotelId.Value),
-                cancellationToken);
+        IQueryable<Hotel> query = includeDeleted
+            ? _dbContext.Hotels.IgnoreQueryFilters()
+            : _dbContext.Hotels;
+
+        return query.AnyAsync(
+            h => h.Code == code
+                && (!excludeHotelId.HasValue || h.Id != excludeHotelId.Value),
+            cancellationToken);
     }
 
-    public async Task<PagedResult<Hotel>> GetPagedAsync(HotelStatus? status, int page, int pageSize, CancellationToken cancellationToken)
+    public async Task<PagedResult<Hotel>> GetPagedAsync(HotelStatus? status, int page, int pageSize, CancellationToken cancellationToken, bool includeDeleted = false)
     {
-        IQueryable<Hotel> query = _dbContext.Hotels
-            .AsNoTracking()
-            .Where(h => !h.IsDeleted);
+        IQueryable<Hotel> query = includeDeleted
+            ? _dbContext.Hotels.IgnoreQueryFilters().AsNoTracking()
+            : _dbContext.Hotels.AsNoTracking();
 
         if (status.HasValue)
         {

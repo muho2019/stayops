@@ -20,14 +20,15 @@ public sealed class HotelService : IHotelService
 
     public async Task<HotelResult> CreateHotelAsync(CreateHotelCommand command, CancellationToken cancellationToken)
     {
-        if (await _hotelRepository.CodeExistsAsync(command.Code, cancellationToken))
+        string trimmedCode = command.Code?.Trim() ?? string.Empty;
+        if (await _hotelRepository.CodeExistsAsync(trimmedCode, cancellationToken))
         {
             throw new ConflictException("Hotel code already exists.");
         }
 
         var hotel = Hotel.Create(
             new HotelId(Guid.NewGuid()),
-            command.Code,
+            trimmedCode,
             command.Name,
             command.Timezone,
             _clock.UtcNow,

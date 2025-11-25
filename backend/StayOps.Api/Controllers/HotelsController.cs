@@ -24,6 +24,9 @@ public sealed class HotelsController : ControllerBase
     [HttpGet]
     [Authorize(Roles = UserRoleDefaults.AdminRoleName)]
     [ProducesResponseType(typeof(PagedResponse<HotelResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> GetHotels(
         [FromQuery] HotelStatus? status,
         [FromQuery] int page = 1,
@@ -43,6 +46,8 @@ public sealed class HotelsController : ControllerBase
     [HttpGet("{hotelId:guid}")]
     [Authorize(Roles = $"{UserRoleDefaults.AdminRoleName},{UserRoleDefaults.StaffRoleName}")]
     [ProducesResponseType(typeof(HotelResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetHotel(Guid hotelId, CancellationToken cancellationToken)
     {
         var result = await _hotelService.GetHotelAsync(hotelId, cancellationToken);
@@ -52,6 +57,8 @@ public sealed class HotelsController : ControllerBase
     [HttpPost]
     [Authorize(Roles = UserRoleDefaults.AdminRoleName)]
     [ProducesResponseType(typeof(HotelResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateHotel([FromBody] CreateHotelRequest request, CancellationToken cancellationToken)
     {
         var command = new CreateHotelCommand(request.Code, request.Name, request.Timezone, request.Status);
@@ -62,6 +69,9 @@ public sealed class HotelsController : ControllerBase
     [HttpPut("{hotelId:guid}")]
     [Authorize(Roles = UserRoleDefaults.AdminRoleName)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateHotel(Guid hotelId, [FromBody] UpdateHotelRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdateHotelCommand(hotelId, request.Code, request.Name, request.Timezone, request.Status);
@@ -72,6 +82,8 @@ public sealed class HotelsController : ControllerBase
     [HttpDelete("{hotelId:guid}")]
     [Authorize(Roles = UserRoleDefaults.AdminRoleName)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteHotel(Guid hotelId, CancellationToken cancellationToken)
     {
         await _hotelService.DeleteHotelAsync(new DeleteHotelCommand(hotelId), cancellationToken);
