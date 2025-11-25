@@ -1,9 +1,7 @@
-using System.Text.Json;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using StayOps.Application.Access;
 using StayOps.Domain.Abstractions;
+using System.Text.Json;
 
 namespace StayOps.Api.Middleware;
 
@@ -23,6 +21,11 @@ public sealed class GlobalExceptionHandlingMiddleware : IMiddleware
         {
             await next(context);
         }
+        catch (ConflictException ex)
+        {
+            _logger.LogWarning(ex, "Conflict exception.");
+            await WriteProblemDetailsAsync(context, StatusCodes.Status409Conflict, ex.Message, "Conflict");
+        }
         catch (AccessManagementException ex)
         {
             _logger.LogWarning(ex, "Access management exception.");
@@ -32,6 +35,11 @@ public sealed class GlobalExceptionHandlingMiddleware : IMiddleware
         {
             _logger.LogWarning(ex, "Domain exception.");
             await WriteProblemDetailsAsync(context, StatusCodes.Status400BadRequest, ex.Message, "Bad Request");
+        }
+        catch (NotFoundException ex)
+        {
+            _logger.LogWarning(ex, "Not found exception.");
+            await WriteProblemDetailsAsync(context, StatusCodes.Status404NotFound, ex.Message, "Not Found");
         }
         catch (Exception ex)
         {
